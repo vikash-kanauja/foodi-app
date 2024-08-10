@@ -1,6 +1,7 @@
 import userModel from "../modules/user.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import nodemailer from 'nodemailer';
 
 const register = async (req, res) => {
   try {
@@ -123,4 +124,72 @@ const logout = (req, res) => {
 };
 
 
-export { register, login, logout };
+
+const resetPassword = async (req, res) => {
+const { resetToken, newPassword } = req.body;
+console.log(resetToken, newPassword,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+  // Find the user by reset token and check if token is valid
+  // const user = await userModel.findOne({
+  //     resetToken,
+  //     resetTokenExpires: { $gt: Date.now() },
+  // });
+
+  const decoded = jwt.verify(resetToken,process.env.JWT_SECRETE)
+  const user =await userModel.findById(decoded.userId)
+
+  if (!user) return res.status(400).json({ message: 'Invalid or expired token' });
+
+  // Update password
+  user.password = await bcryptjs.hash(newPassword, 10);
+  user.resetToken = undefined; // Clear reset token
+  user.resetTokenExpires = undefined; // Clear expiration
+  await user.save();
+
+  res.json({ message: 'Password has been reset successfully' });
+};
+
+
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  // Find the user by email
+  const user = await userModel.findOne({ email });
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  // Generate a password reset token
+  // const resetToken = crypto.randomBytes(32).toString('hex');
+  // user.resetToken = resetToken;
+  // user.resetTokenExpires = Date.now() + 3600000; // 1 hour
+  // await user.save();
+
+  const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRETE);
+  const data = await userModel.updateOne({email},{$set:{token:resetToken}})
+  // res.status(200).send({success:true,message:"Please check your inbox of mail and reset password."})
+
+  // Send email with reset link
+  const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+      },
+  });
+
+  const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+  const mailOptions = {
+      to: email,
+      from: process.env.EMAIL_USER,
+      subject: 'Password Reset',
+      text: `Click the following link to reset your password: ${resetUrl}`,
+  };
+console.log(mailOptions);
+
+  transporter.sendMail(mailOptions, (err) => {
+      if (err) return res.status(500).json({ message: 'Error sending email' });
+      res.json({ message: 'Password reset link sent' });
+  });
+};
+
+
+export { register, login, logout, resetPassword, forgotPassword };

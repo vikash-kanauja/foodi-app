@@ -126,18 +126,18 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const checkAuth = async () => {
+    const checkAuth = async() => {
         try {
             const response = await fetch('http://localhost:4000/api/auth/verify', {
                 method: 'GET',
                 credentials: 'include'
             });
-
+            console.log(response);
+            
             if (response.ok) {
                 const userData = await response.json();
                 setUser(userData);
                 console.log(userData);
-                
             } else {
                 setUser(null);
             }
@@ -147,6 +147,8 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         }
     };
+// first payload show password 
+// in user login the cannnot go to the reset page
 
     useEffect(() => {
         checkAuth();
@@ -156,30 +158,52 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
     };
 
-    // const logout = () => {
-    //     setUser(null);
-    //     // Optionally make a request to your backend to log out
-    // };
-
     const logout = async () => {
         try {
-          // Make a request to your backend to log out
-          await fetch('http://localhost:4000/api/auth/logout', {
-            method: 'POST',
-            credentials: 'include' // Ensure cookies are sent with the request
-          });
-      
-          // Clear user state
-          setUser(null);
+            // Make a request to your backend to log out
+            await fetch('http://localhost:4000/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include' // Ensure cookies are sent with the request
+            });
+
+            // Clear user state
+            setUser(null);
+            console.log(user,"usssesr;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+            
         } catch (error) {
-          console.error('Logout request failed:', error);
-          throw error; // Rethrow to handle in Profile component
+            console.error('Logout request failed:', error);
+            throw error; // Rethrow to handle in Profile component
         }
-      };
-      
+    };
+
+    // Forgot Password Method
+    const forgotPassword = async (email) => {
+        const response = await fetch('http://localhost:4000/api/auth/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        });
+
+        if (!response.ok) throw new Error('Failed to send reset link');
+    };
+
+    // Reset Password Method
+    const resetPassword = async (resetToken, newPassword) => {
+        console.log(resetToken,"resetTokenresetTokenresetToken",newPassword);
+        console.log();
+        
+        const response = await fetch('http://localhost:4000/api/auth/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ resetToken, newPassword }),
+            // credentials: 'include'
+        });
+
+        if (!response.ok) throw new Error('Failed to reset password');
+    };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, forgotPassword, resetPassword }}>
             {children}
         </AuthContext.Provider>
     );
@@ -190,4 +214,3 @@ export { AuthContext };
 
 // Custom hook to use auth context
 export const useAuth = () => useContext(AuthContext);
-// export default AuthProvider

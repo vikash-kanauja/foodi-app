@@ -5,6 +5,8 @@ import Menu from "../pages/shop/Menu";
 import Signup from "../components/Signup";
 import UpdateProfile from "../pages/dashboard/UpdateProfile";
 import Login from "../components/login";
+import ResetPasswordPage from "../pages/dashboard/ResetPasswordPage";
+import ForgotPasswordPage from "../pages/dashboard/ForgotPasswordPage"
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
       {
         path: "/update-profile",
         element: <UpdateProfile/>
+      },
+      {
+        path:"/forgot-password",
+        element:<ForgotPasswordPage />
+      },
+      {
+        path:"/reset-password/:token",
+        element:<ResetPasswordPage />
       }
     ],
   },
