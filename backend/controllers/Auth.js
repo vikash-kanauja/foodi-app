@@ -6,7 +6,7 @@ import nodemailer from 'nodemailer';
 const register = async (req, res) => {
   try {
     const { name, email, password, role = "user" } = req.body;
-    console.log(name);
+    // console.log(name);
     const user = await userModel.findOne({ email });
     if (user) {
       return res.status(401).json({
@@ -21,7 +21,7 @@ const register = async (req, res) => {
       role,
     });
     const salt = await bcryptjs.genSalt(10);
-    console.log(salt);
+    // console.log(salt);
     const hashPassword = await bcryptjs.hash(password, salt);
 
     newUser.password = hashPassword;
@@ -33,7 +33,7 @@ const register = async (req, res) => {
       newUser,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -127,7 +127,7 @@ const logout = (req, res) => {
 
 const resetPassword = async (req, res) => {
 const { resetToken, newPassword } = req.body;
-console.log(resetToken, newPassword,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+// console.log(resetToken, newPassword,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 
   // Find the user by reset token and check if token is valid
   // const user = await userModel.findOne({
@@ -183,7 +183,6 @@ const forgotPassword = async (req, res) => {
       subject: 'Password Reset',
       text: `Click the following link to reset your password: ${resetUrl}`,
   };
-console.log(mailOptions);
 
   transporter.sendMail(mailOptions, (err) => {
       if (err) return res.status(500).json({ message: 'Error sending email' });

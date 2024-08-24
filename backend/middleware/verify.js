@@ -3,7 +3,7 @@ import userModel from '../modules/user.js';
 
 export const authenticateToken = async (req, res, next) => {
     const token = req.cookies.token || req.headers['Authorization']; // Get the token from cookies
-    console.log(req.cookies,"////////////////////////////");
+    // console.log(req.cookies,"////////////////////////////");
 
     if (!token) {
         console.error('No token provided');
@@ -21,7 +21,7 @@ export const authenticateToken = async (req, res, next) => {
         }
 
         req.user = user; // Attach user info to request
-        console.log(user,"userinfo;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+        // console.log(user,"userinfo;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
         
         next(); // Pass control to the next middleware or route handler
     } catch (error) {

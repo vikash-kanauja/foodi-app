@@ -4,7 +4,11 @@ import cors from 'cors'
 import cookieparser from "cookie-parser"
 import connectDB from "./config/db.js";
 import AuthRoutes from "./routes/Auth.js";
-import AdminRoutes from "./routes/Adminroutes.js";
+import AdminRoutes from "./routes/AdminRoutes.js";
+import UserRoutes from "./routes/UserRoutes.js";
+import MenuRoutes from "./routes/menuRoutes.js"
+import CartRoutes from "./routes/CartRoutes.js";
+// import UserRoutes from "./routes/UserRoutes.js";
 dotenv.config()
 const PORT = process.env.PORT
 const app = express();
@@ -20,7 +24,11 @@ app.use(cors({
   }));
 app.use('/api/auth',AuthRoutes)
 app.use('/api/admin',AdminRoutes)
+app.use('/api/user',UserRoutes)
 // app.use('/user',AdminRoutes)
+app.use('/api/menu', MenuRoutes);
+
+app.use('/api/cart', CartRoutes);
 
 app.get('/',(req,res)=>{
     res.send("Testing for get request")

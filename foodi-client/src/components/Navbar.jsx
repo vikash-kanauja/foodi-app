@@ -3,7 +3,7 @@ import logo from "/logo.png";
 import { FaRegUser } from "react-icons/fa";
 import Modal from "./Modal";
 import { AuthContext } from "../contexts/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { useAuth } from '../contexts/AuthProvider';
 
 import Profile from "./Profile";
@@ -11,9 +11,12 @@ import Profile from "./Profile";
 const Navbar = () => {
   const [isSticky, setSticky] = useState(false);
 
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   // const {user} = useContext(useAuth);
-  console.log(user);
+  const name = user?.name;
+
+console.log(name); // Output: Vikash
+
   const navigate = useNavigate();
   useEffect(() => {
     const handleScroll = () => {
@@ -134,6 +137,8 @@ const Navbar = () => {
               />
             </svg>
           </button>
+          <Link to="cart-page">
+          </Link>
           <label
             tabIndex={0}
             className="btn btn-ghost btn-circle hidden lg:flex items-center justify-center mr-3"
@@ -157,9 +162,12 @@ const Navbar = () => {
             </div>
           </label>
 
-          {/* login btn  // onClick={() => document.getElementById("my_modal_5").showModal()} */}
-          {user ? (
-            <Profile user={user} />
+          {loading ? (
+            // Show loading indicator while loading is true
+            <div className="loading-indicator">Loading...</div>
+          ) : // After loading is false, show user data or login button
+          user ? (
+            <Profile name={name} loading={loading} />
           ) : (
             <button
               onClick={() => navigate("/login")}

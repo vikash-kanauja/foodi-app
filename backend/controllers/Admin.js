@@ -20,9 +20,9 @@ const deleteUser = async (req, res) => {
             message: "you can not delete yourself/admin",
           });
     }
-    console.log(userId);
+    // console.log(userId);
     const user = await userModel.findByIdAndDelete(userId);
-    console.log(user);
+    // console.log(user);
     if (!user) {
       return res.status(404).json({
         message: "user not found",
@@ -31,7 +31,7 @@ const deleteUser = async (req, res) => {
     res.status(200).json({ message: "user delete successfully", user });
   } catch (error) {
     res.status(400).json({ message: "internal server error" });
-    console.log(error);
+    // console.log(error);
   }
 };
 export { getuser, deleteUser };

@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
 
-const Profile = ({ user }) => {
-  console.log(user.name,"From profile");
-  const {logout} = useContext(AuthContext)
+const Profile = ({ name,loading }) => {
+  console.log(name, "From profile");
+  const { logout } = useContext(AuthContext);
   // const handleLogout = () => {
   //   logout().then(() => {
   //     // Sign-out successful.
@@ -17,15 +17,15 @@ const Profile = ({ user }) => {
       await logout();
       // Redirect or update UI after successful logout
       // For example, redirect to login page or home page
-      window.location.href = '/login'; // Or use a navigation library to redirect
+      window.location.href = "/login"; // Or use a navigation library to redirect
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
       // Handle error, display a message to the user, etc.
     }
   };
 
-  console.log(user.name,"From profile");
-  
+  console.log(name, "From profile");
+
   return (
     <div>
       <div className="drawer drawer-end z-50">
@@ -37,12 +37,13 @@ const Profile = ({ user }) => {
             className="drawer-button btn btn-ghost btn-circle avatar"
           >
             <div className="w-10 rounded-full">
+
               {
-                user.name
-              //   user.photoURL ? <img
-              //   alt="Tailwind CSS Navbar component"
-              //   src={user.photoURL}
-              // /> : <img alt="Tailwind CSS Navbar component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                loading ? <div><div className="loading-indicator">Loading...</div></div> : name 
+                //   user.photoURL ? <img
+                //   alt="Tailwind CSS Navbar component"
+                //   src={user.photoURL}
+                // /> : <img alt="Tailwind CSS Navbar component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
               }
             </div>
           </label>
