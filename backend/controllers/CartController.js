@@ -86,7 +86,7 @@ export const getCart = async (req, res) => {
 //   }
 // };
 
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 
 export const removeFromCart = async (req, res) => {
   const userId = req.user.id;
@@ -114,5 +114,101 @@ export const removeFromCart = async (req, res) => {
   } catch (error) {
     console.error("Error removing item from cart", error); // Log the error
     res.status(500).json({ message: "Error removing item from cart", error });
+  }
+};
+
+
+// Increase quantity of a specific item in the cart
+// export const increaseQuantity = async (req, res) => {
+//   const userId = req.user.id;
+//   const { menuItemId } = req.params;
+
+//   try {
+//       const cart = await Cart.findOne({ userId });
+
+//       if (!cart) {
+//           return res.status(404).json({ message: 'Cart not found' });
+//       }
+
+//       const itemIndex = cart.items.findIndex(item => item.menuItemId.toString() === menuItemId);
+
+//       if (itemIndex > -1) {
+//           // Increase the quantity of the item
+//           cart.items[itemIndex].quantity += 1;
+//           await cart.save();
+//           return res.status(200).json(cart);
+//       } else {
+//           return res.status(404).json({ message: 'Item not found in cart' });
+//       }
+//   } catch (error) {
+//       res.status(500).json({ message: 'Error increasing item quantity', error });
+//   }
+// };
+
+// // Decrease quantity of a specific item in the cart
+// export const decreaseQuantity = async (req, res) => {
+//   const userId = req.user.id;
+//   const { menuItemId } = req.params;
+
+//   try {
+//       const cart = await Cart.findOne({ userId });
+
+//       if (!cart) {
+//           return res.status(404).json({ message: 'Cart not found' });
+//       }
+
+//       const itemIndex = cart.items.findIndex(item => item.menuItemId.toString() === menuItemId);
+
+//       if (itemIndex > -1) {
+//           if (cart.items[itemIndex].quantity > 1) {
+//               // Decrease the quantity of the item
+//               cart.items[itemIndex].quantity -= 1;
+//               await cart.save();
+//               return res.status(200).json(cart);
+//           } else {
+//               // If the quantity is 1, remove the item from the cart
+//               cart.items.splice(itemIndex, 1);
+//               await cart.save();
+//               return res.status(200).json(cart);
+//           }
+//       } else {
+//           return res.status(404).json({ message: 'Item not found in cart' });
+//       }
+//   } catch (error) {
+//       res.status(500).json({ message: 'Error decreasing item quantity', error });
+//   }
+// };
+
+// Update quantity of a specific item in the cart
+export const updateQuantity = async (req, res) => {
+  const userId = req.user.id;
+  const { menuItemId } = req.params;
+  const { quantity } = req.body;
+
+  try {
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    const itemIndex = cart.items.findIndex(item => item.menuItemId.toString() === menuItemId);
+
+    if (itemIndex > -1) {
+      // Update the quantity of the item
+      cart.items[itemIndex].quantity = quantity;
+
+      // If quantity is 0, remove the item from the cart
+      if (quantity <= 0) {
+        cart.items.splice(itemIndex, 1);
+      }
+
+      await cart.save();
+      return res.status(200).json(cart);
+    } else {
+      return res.status(404).json({ message: "Item not found in cart" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error updating item quantity", error });
   }
 };

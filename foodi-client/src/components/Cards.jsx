@@ -1,14 +1,19 @@
 import React, { useContext, useState } from "react";
 import { FaHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
 const Cards = ({ item }) => {
   // console.log(item,"Itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm")
   // const { name, image, price, recipe, _id } = item;
   const [isHeartFilled, setIsHeartFilled] = useState(false);
   const { user, loading } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   //Add to cart
   // console.log(user, "useruseruseruser");
 
@@ -44,13 +49,36 @@ const handleAddtoCart = async (item) => {
                 }
             });
 
-            console.log('Item added to cart:', response.data);
+            console.log('Item added to cart:', response.data?._id);
+            if(response.data?._id) {
+              Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Your work has been saved",
+                showConfirmButton: false,
+                timer: 1500
+              });
+            }
             // Optionally, you can navigate to the cart page or display a success message
             // navigate('/cart');
         } catch (error) {
             console.error('Error adding item to cart:', error.response?.data || error.message);
             // Handle the error, e.g., show an error message to the user
         }
+    }else{
+      Swal.fire({
+        title: "Please Login?",
+        text: "Without an account can't able to add products",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Signup Now"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/signup',{state:{from:location}})
+        }
+      });
     }
 };
 
