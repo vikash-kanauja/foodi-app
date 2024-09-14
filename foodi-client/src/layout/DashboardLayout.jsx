@@ -13,6 +13,35 @@ import { MdDashboardCustomize } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import logo from "/logo.png";
 
+const sharedLinks = (
+  <>
+    <li className="mt-3">
+      <Link to={"/home"}>
+        <FaHome />
+        Home
+      </Link>
+    </li>
+    <li>
+      <Link to={"/menu"}>
+        <FaCartShopping />
+        Menu
+      </Link>
+    </li>
+    <li>
+      <Link to={"/dashboard"}>
+        <TbTruckDelivery />
+        Order Tracking
+      </Link>
+    </li>
+    <li>
+      <Link to={"/dashboard"}>
+        <RiCustomerService2Fill />
+        Customer Support
+      </Link>
+    </li>
+  </>
+);
+
 const DashboardLayout = () => {
   return (
     // <div className="flex">
@@ -35,7 +64,7 @@ const DashboardLayout = () => {
     //   </div>
     // </div>
 
-    <div className="drawer sm:drawer-open">
+    <div className="drawer sm:drawer-open ">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col items-center justify-center">
         {/* Page content here */}
@@ -50,10 +79,12 @@ const DashboardLayout = () => {
             onClick={() => navigate("/login")}
             className=" p-2 flex items-center gap-2 rounded-full px-4 bg-green text-white text-sm sm:hidden"
           >
-            <FaRegUser /> Login
+            <FaRegUser /> Logout
           </button>
         </div>
-        <Outlet />
+        <div className=" min-w-full mt-5 md:mt-2 mx-4 ">
+          <Outlet />
+        </div>
       </div>
       <div className="drawer-side">
         <label
@@ -94,36 +125,16 @@ const DashboardLayout = () => {
               Manage items
             </Link>
           </li>
-          <li>
+          <li className="mb-3">
             <Link to={"/dashboard/users"}>
               <FaUsers />
               Users
             </Link>
           </li>
-          <li>
-            <Link to={"/home"}>
-              <FaHome />
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to={"/menu"}>
-              <FaCartShopping />
-              Menu
-            </Link>
-          </li>
-          <li>
-            <Link to={"/dashboard"}>
-              <TbTruckDelivery />
-              Order Tracking
-            </Link>
-          </li>
-          <li>
-            <Link to={"/dashboard"}>
-              <RiCustomerService2Fill />
-              Customer Support
-            </Link>
-          </li>
+          <hr/>
+          {
+            sharedLinks
+          }
         </ul>
       </div>
     </div>

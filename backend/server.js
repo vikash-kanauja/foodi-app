@@ -25,7 +25,7 @@ app.use(cors({
 app.use('/api/auth',AuthRoutes)
 app.use('/api/admin',AdminRoutes)
 app.use('/api/user',UserRoutes)
-// app.use('/user',AdminRoutes)
+app.use('/api',AdminRoutes)
 app.use('/api/menu', MenuRoutes);
 
 app.use('/api/cart', CartRoutes);
